@@ -1,0 +1,223 @@
+/*
+ * Copyright (c) 2010-2011, Visage Project
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 3. Neither the name Visage nor the names of its contributors may be used
+ *    to endorse or promote products derived from this software without
+ *    specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+package org.visage.android.widget;
+
+import android.text.method.PasswordTransformationMethod;
+import android.text.method.SingleLineTransformationMethod;
+import android.text.TextUtils;
+import org.visage.android.view.View;
+import org.visage.android.util.Unit;
+import org.visage.android.text.method.KeyListener;
+import org.visage.android.text.util.AutoLink;
+
+/**
+ * Displays text to the user and optionally allows them to edit it. A TextView
+ * is a complete text editor, however the basic class is configured to not allow
+ * editing; see {@link EditText} for a subclass that configures the text view
+ * for editing.
+ *
+ * @author Stephen Chin <steveonjava@gmail.com>
+ */
+public class TextView extends View {
+    public-read var androidTextView = bind androidDelegate as android.widget.TextView;
+
+    override function contextUpdated() {
+        androidDelegate = new android.widget.TextView(context);
+    }
+
+    /**
+     * Controls whether links such as urls and email addresses are automatically
+     * found and converted to clickable links.  The default value is an empty
+     * sequence ("[]"), disabling this feature.
+     * <p/>
+     * Must be a sequence containing zero or more {@link AutoLink} values.  See
+     * the {@link AutoLink} docs for possible values.
+     */
+    public var autoLink:AutoLink[] on replace {
+        if (isInitialized(autoLink)) updateProperty(function() {
+            androidTextView.setAutoLinkMask(AutoLink.flatten(autoLink));
+        })
+    }
+
+    /**
+     * Makes the cursor visible (the default) or invisible.
+     */
+    public var cursorVisible:Boolean = true on replace {
+        if (androidTextView != null or cursorVisible != true) updateProperty(function() {
+            androidTextView.setCursorVisible(cursorVisible);
+        })
+    }
+
+    /**
+     * If set, causes words that are longer than the view is wide to be
+     * ellipsized instead of broken in the middle. You will often also want to
+     * set scrollHorizontally or singleLine as well so that the text as a whole
+     * is also constrained to a single line instead of still allowed to be
+     * broken onto multiple lines.
+     */
+    public var ellipsize:TextUtils.TruncateAt on replace {
+        if (isInitialized(ellipsize)) updateProperty(function() {
+            androidTextView.setEllipsize(ellipsize);
+        })
+    }
+
+    /**
+     * Sets the text to be displayed when the text of the TextView is empty.
+     * Null means to use the normal empty text. The hint does not currently
+     * participate in determining the size of the view.
+     */
+    public var hint:String on replace {
+        if (isInitialized(hint)) updateProperty(function() {
+            androidTextView.setHint(hint);
+        })
+    }
+
+    /**
+     * Set the input type for the TextView by assigning a {@link KeyListener}.
+     * <p/>
+     * The default is a Text method with no capitalization or auto correction.
+     * <p/>
+     * Built-in Key Listener types include:
+     * <ul>
+     * <li>{@link org.visage.android.text.method.Date}
+     * <li>{@link org.visage.android.text.method.DateTime}
+     * <li>{@link org.visage.android.text.method.Number}
+     * <li>{@link org.visage.android.text.method.PhoneNumber}
+     * <li>{@link org.visage.android.text.method.Text}
+     * <li>{@link org.visage.android.text.method.Time}
+     * </ul>
+     */
+    public var input:KeyListener = KeyListener.DEFAULT on replace {
+        if (androidTextView != null or input != KeyListener.DEFAULT) updateProperty(function() {
+            androidTextView.setKeyListener(input.androidKeyListener);
+        })
+    }
+
+    /**
+     * The number of times to repeat the marquee animation. Only applied if the
+     * TextView has marquee enabled.
+     */
+    public var marqueeRepeatLimit:Integer on replace {
+        if (isInitialized(marqueeRepeatLimit)) updateProperty(function() {
+            androidTextView.setMarqueeRepeatLimit(marqueeRepeatLimit);
+        })
+    }
+
+    /**
+     * Whether the characters of the field are displayed as password dots
+     * instead of themselves.
+     */
+    public var password:Boolean on replace {
+        if (isInitialized(password)) updateProperty(updateTransform);
+    }
+
+    /**
+     * Constrains the text to a single horizontally scrolling line instead of
+     * letting it wrap onto multiple lines, and advances focus instead of
+     * inserting a newline when you press the enter key. Note: for editable text
+     * views, it is better to control this using the textMultiLine flag in the
+     * inputType attribute. (If both singleLine and inputType are supplied, the
+     * inputType flags will override the value of singleLine.)
+     */
+    public var singleLine:Boolean on replace {
+        if (isInitialized(singleLine)) updateProperty(updateTransform);
+    }
+
+    function updateTransform() {
+        if (password) {
+            androidTextView.setTransformationMethod(new PasswordTransformationMethod());
+        } else if (singleLine) {
+            androidTextView.setTransformationMethod(new SingleLineTransformationMethod());
+        } else {
+            androidTextView.setTransformationMethod(null);
+        }
+    }
+
+    /**
+     * Whether the text is allowed to be wider than the view (and therefore can
+     * be scrolled horizontally).
+     */
+    public var scrollHorizontally:Boolean on replace {
+        if (isInitialized(scrollHorizontally)) updateProperty(function() {
+            androidTextView.setHorizontallyScrolling(scrollHorizontally);
+        })
+    }
+
+    /**
+     * Size of the text.  The units of this are set by {@link #textSizeUnits},
+     * which is "SP" (scaled-pixels) by default.
+     */
+    public var textSize:Float = 14 on replace {
+        if (androidTextView != null or textSize != 14) updateProperty(setText)
+    }
+
+    /**
+     * Set the text size units.  The default value is "SP" (scaled-pixels).
+     * <p/>
+     * See {@link Unit} for the possible dimension units.
+     */
+    public var textSizeUnits:Unit = Unit.SP on replace {
+        if (androidTextView != null or textSizeUnits != Unit.SP) updateProperty(setText)
+    }
+
+    function setText() {
+        androidTextView.setTextSize(textSizeUnits.getUnitMask(), textSize);
+    }
+
+    /**
+     * Makes the TextView be exactly this many lines tall.
+     */
+    public var lines:Integer on replace {
+        if (isInitialized(lines)) updateProperty(function() {
+            androidTextView.setLines(lines);
+        })
+    }
+
+    /**
+     * If set to false, keeps the movement method from being set to the link
+     * movement method even if autoLink causes links to be found.
+     */
+    public var linksClickable:Boolean = true on replace {
+        if (androidTextView != null or linksClickable != true) updateProperty(function() {
+            androidTextView.setLinksClickable(linksClickable);
+        })
+    }
+
+    protected var textUpdating = false;
+
+    /**
+     * Text to display.
+     * <p/>
+     * Must be a string value, using '\' to escape characters such as '\n' or '\uxxxx' for a unicode character.
+     */
+    public default var text:String on replace {
+        if (isInitialized(text) and not textUpdating) updateProperty(function() {
+            androidTextView.setText(text);
+        })
+    }
+}

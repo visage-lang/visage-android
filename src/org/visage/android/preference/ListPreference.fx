@@ -1,0 +1,85 @@
+/*
+ * Copyright (c) 2010-2011, Visage Project
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 3. Neither the name Visage nor the names of its contributors may be used
+ *    to endorse or promote products derived from this software without
+ *    specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+package org.visage.android.preference;
+
+import javafx.util.Sequences;
+
+/**
+ * @author Stephen Chin <steveonjava@gmail.com>
+ */
+public class ListPreference extends DialogPreference {
+    public-read var androidListPreference = bind androidDelegate as android.preference.ListPreference;
+
+    override function contextUpdated() {
+        androidDelegate = new android.preference.ListPreference(context);
+    }
+
+    public var entries:String[] on replace {
+        if (isInitialized(entries)) updateProperty(function() {
+            androidListPreference.setEntries(entries);
+        });
+    }
+
+    public var entryValues:String[] on replace {
+        if (isInitialized(entryValues)) updateProperty(function() {
+            androidListPreference.setEntryValues(entryValues);
+        });
+    }
+
+    var updatingEntry = false;
+
+    override function onPreferenceChange(preference:android.preference.Preference, newValue:Object):Boolean {
+        if (super.onPreferenceChange(preference, newValue)) {
+            updatingEntry = true;
+            value = newValue as String;
+            entry = entries[androidListPreference.findIndexOfValue(value)];
+            updatingEntry = false;
+            return true;
+        }
+        return false;
+    }
+
+    override function preferenceAdded() {
+        updatingEntry = true;
+        value = androidListPreference.getValue();
+        entry = androidListPreference.getEntry().toString();
+        updatingEntry = false;
+    }
+
+    public var entry:String on replace {
+        if (not updatingEntry and isInitialized(entry)) updateProperty(function() {
+            androidListPreference.setValueIndex(Sequences.indexOf(entry, entries));
+        });
+    }
+
+    public var value:String on replace {
+        if (not updatingEntry and isInitialized(value)) updateProperty(function() {
+            androidListPreference.setValue(value);
+        });
+    }
+}

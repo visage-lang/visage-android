@@ -1,0 +1,94 @@
+/*
+ * Copyright (c) 2010-2011, Visage Project
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 3. Neither the name Visage nor the names of its contributors may be used
+ *    to endorse or promote products derived from this software without
+ *    specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+package org.visage.android.preference;
+
+import org.visage.android.widget.EditText;
+
+/**
+ * A {@link Preference] that allows for string input.
+ * <p/>
+ * It is a subclass of {@link DialogPreference} and shows the {@link EditText}
+ * in a dialog. This {@link EditText} can be modified directly by using the
+ * {@link #editText} variable, or through pass-through variables on this class.
+ * <p/>
+ * This preference will store a string into the SharedPreferences.
+ *
+ * @author Stephen Chin <steveonjava@gmail.com>
+ */
+public class EditTextPreference extends DialogPreference {
+    /**
+     * Reference to the wrapped Android <code>EditTextPreference</code> class.
+     */
+    public-read var androidEditTextPreference = bind androidDelegate as android.preference.EditTextPreference;
+
+    override function contextUpdated() {
+        androidDelegate = new android.preference.EditTextPreference(context);
+        (editText as WrappedEditText).wrappedEditText = androidEditTextPreference.getEditText();
+        editText.context = context;
+    }
+
+    /**
+     * The [@link EditText} widget that will be shown in the dialog.
+     */
+    public-read def editText:EditText = WrappedEditText {}
+
+    var updatingText = false;
+
+    override function onPreferenceChange(preference:android.preference.Preference, newValue:Object):Boolean {
+        if (super.onPreferenceChange(preference, newValue)) {
+            updatingText = true;
+            text = newValue as String;
+            updatingText = false;
+            return true;
+        }
+        return false;
+    }
+    
+    override function preferenceAdded() {
+        updatingText = true;
+        text = androidEditTextPreference.getText();
+        updatingText = false;
+    }
+
+    /**
+     * Bound to the text from the <code>SharedPreferences</code>.  Retrieving
+     * this value will return the current persisted value, and setting it will
+     * save a new value.
+     */
+    public var text:String on replace {
+        if (not updatingText and isInitialized(text)) updateProperty(function() {
+            androidEditTextPreference.setText(text);
+        });
+    }
+
+    public var hint = bind editText.hint with inverse;
+}
+
+class WrappedEditText extends EditText {
+    public-init var wrappedEditText:android.widget.EditText;
+}
