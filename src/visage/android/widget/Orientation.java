@@ -25,17 +25,22 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.visage.android.text.method;
-
-import android.text.method.DialerKeyListener;
+package visage.android.widget;
 
 /**
- * Allows entry of phone numbers into a text field.
- *
  * @author Stephen Chin <steveonjava@gmail.com>
  */
-public class PhoneNumber extends KeyListener {
-    init {
-        androidKeyListener = DialerKeyListener.getInstance();
+public enum Orientation {
+    HORIZONTAL (android.widget.LinearLayout.HORIZONTAL),
+    VERTICAL (android.widget.LinearLayout.VERTICAL);
+
+    private final int orient;
+
+    public int getOrient() {
+        return orient;
+    }
+
+    Orientation(int orient) {
+        this.orient = orient;
     }
 }

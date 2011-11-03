@@ -27,7 +27,7 @@
  */
 package org.visage.android.preference;
 
-import javafx.util.Sequences;
+import visage.util.Sequences;
 
 /**
  * @author Stephen Chin <steveonjava@gmail.com>

@@ -25,17 +25,21 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.visage.android.text.method;
-
-import android.text.method.TimeKeyListener;
+package visage.android.view;
 
 /**
- * Allows entry of time values into a text field.
- *
  * @author Stephen Chin <steveonjava@gmail.com>
  */
-public class Time extends KeyListener {
-    init {
-        androidKeyListener = TimeKeyListener.getInstance();
+public abstract class ViewGroup extends View {
+    public-read var androidViewGroup = bind androidDelegate as android.view.ViewGroup;
+
+    public default var view:View[] on replace =newView {
+        updateProperty(function() {
+            for (v in newView) {
+                v.context = context;
+                androidViewGroup.addView(v.androidView);
+            }
+        });
     }
+
 }

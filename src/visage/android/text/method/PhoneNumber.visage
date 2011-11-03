@@ -25,17 +25,17 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.visage.android.text.method;
+package visage.android.text.method;
 
-import android.text.method.DateKeyListener;
+import android.text.method.DialerKeyListener;
 
 /**
- * Allows entry of dates into a text field.
+ * Allows entry of phone numbers into a text field.
  *
  * @author Stephen Chin <steveonjava@gmail.com>
  */
-public class Date extends KeyListener {
+public class PhoneNumber extends KeyListener {
     init {
-        androidKeyListener = DateKeyListener.getInstance();
+        androidKeyListener = DialerKeyListener.getInstance();
     }
 }

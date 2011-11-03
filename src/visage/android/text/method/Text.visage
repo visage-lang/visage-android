@@ -25,28 +25,31 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.visage.android.widget;
+package visage.android.text.method;
 
-import android.text.TextWatcher;
+import android.text.method.TextKeyListener;
 
 /**
+ * Allows entry of text.  Can be either
+ *
  * @author Stephen Chin <steveonjava@gmail.com>
  */
-public class EditText extends TextView {
-    public-read var androidEditText = bind androidDelegate as android.widget.EditText;
+public class Text extends KeyListener {
+    /**
+     * If set, specifies that the associated text view will automatically
+     * corrects some common spelling errors. The default is "false".
+     */
+    public-init var autoText:Boolean;
 
-    override function contextUpdated() {
-        androidDelegate = new android.widget.EditText(context);
-        androidEditText.addTextChangedListener(TextWatcher {
-            override function afterTextChanged(e) {
-                textUpdating = true;
-                text = androidEditText.getText().toString();
-                textUpdating = false;
-            }
-            override function onTextChanged(s, start, befor, count) {
-            }
-            override function beforeTextChanged(s, start, count, aftr) {
-            }
-        });
+    /**
+     * If set, specifies that the associated text view should automatically
+     * capitalize what the user types. The default is "none".
+     * <p>
+     * See {@link TextKeyListener.Capitalize} for all the possible values.
+     */
+    public-init var capitalize = TextKeyListener.Capitalize.NONE;
+
+    init {
+        androidKeyListener = TextKeyListener.getInstance(autoText, capitalize);
     }
 }

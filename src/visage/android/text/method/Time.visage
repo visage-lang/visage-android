@@ -25,17 +25,17 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.visage.android.text.method;
+package visage.android.text.method;
 
-import android.text.method.DateTimeKeyListener;
+import android.text.method.TimeKeyListener;
 
 /**
- * Allows entry of dates with a time component into a text field.
+ * Allows entry of time values into a text field.
  *
  * @author Stephen Chin <steveonjava@gmail.com>
  */
-public class DateTime extends KeyListener {
+public class Time extends KeyListener {
     init {
-        androidKeyListener = DateTimeKeyListener.getInstance();
+        androidKeyListener = TimeKeyListener.getInstance();
     }
 }

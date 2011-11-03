@@ -25,23 +25,42 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.visage.android.widget;
+package visage.android.view;
 
-import org.visage.android.view.ViewGroup;
+import org.visage.android.AndroidDelegate;
+import org.visage.android.ContextAware;
+import android.view.View.OnClickListener;
 
 /**
  * @author Stephen Chin <steveonjava@gmail.com>
  */
-public class LinearLayout extends ViewGroup {
-    public-read var androidLinearLayout = bind androidDelegate as android.widget.LinearLayout;
+public abstract class View extends AndroidDelegate, ContextAware {
+    public-read var androidView = bind androidDelegate as android.view.View;
 
-    override function contextUpdated() {
-        androidDelegate = new android.widget.LinearLayout(context);
+    public var focusable:Boolean on replace {
+        if (isInitialized(focusable)) updateProperty(function() {
+            androidView.setFocusable(focusable);
+        })
     }
 
-    public var orientation:Orientation on replace {
-        if (isInitialized(orientation)) updateProperty(function() {
-            androidLinearLayout.setOrientation(orientation.getOrient());
-        });
+    public var focusableInTouchMode:Boolean on replace {
+        if (isInitialized(focusableInTouchMode)) updateProperty(function() {
+            androidView.setFocusableInTouchMode(focusableInTouchMode);
+        })
+    }
+
+    public var onClick:function() on replace {
+        if (isInitialized(onClick)) updateProperty(function() {
+            if (onClick != null) {
+                def clickFunc = onClick;
+                androidView.setOnClickListener(OnClickListener {
+                    override function onClick(v) {
+                        clickFunc();
+                    }
+                });
+            } else {
+                androidView.setOnClickListener(null);
+            }
+        })
     }
 }

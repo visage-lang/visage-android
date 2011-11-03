@@ -25,42 +25,20 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.visage.android.view;
+package visage.android.text.method;
 
-import org.visage.android.AndroidDelegate;
-import org.visage.android.ContextAware;
-import android.view.View.OnClickListener;
+public def DEFAULT = Text {}
 
 /**
+ * Proxy wrapper for android key listeners.
+ * <p/>
+ * Subclasses should set the wrapped androidKeyListener on initialization.
+ *
  * @author Stephen Chin <steveonjava@gmail.com>
  */
-public abstract class View extends AndroidDelegate, ContextAware {
-    public-read var androidView = bind androidDelegate as android.view.View;
-
-    public var focusable:Boolean on replace {
-        if (isInitialized(focusable)) updateProperty(function() {
-            androidView.setFocusable(focusable);
-        })
-    }
-
-    public var focusableInTouchMode:Boolean on replace {
-        if (isInitialized(focusableInTouchMode)) updateProperty(function() {
-            androidView.setFocusableInTouchMode(focusableInTouchMode);
-        })
-    }
-
-    public var onClick:function() on replace {
-        if (isInitialized(onClick)) updateProperty(function() {
-            if (onClick != null) {
-                def clickFunc = onClick;
-                androidView.setOnClickListener(OnClickListener {
-                    override function onClick(v) {
-                        clickFunc();
-                    }
-                });
-            } else {
-                androidView.setOnClickListener(null);
-            }
-        })
-    }
+public class KeyListener {
+    /**
+     * Reference to the underlying android key listener class.
+     */
+    public-read protected var androidKeyListener:android.text.method.KeyListener;
 }

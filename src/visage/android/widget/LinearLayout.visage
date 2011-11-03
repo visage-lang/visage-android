@@ -25,31 +25,23 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.visage.android.text.method;
+package visage.android.widget;
 
-import android.text.method.TextKeyListener;
+import visage.android.view.ViewGroup;
 
 /**
- * Allows entry of text.  Can be either
- *
  * @author Stephen Chin <steveonjava@gmail.com>
  */
-public class Text extends KeyListener {
-    /**
-     * If set, specifies that the associated text view will automatically
-     * corrects some common spelling errors. The default is "false".
-     */
-    public-init var autoText:Boolean;
+public class LinearLayout extends ViewGroup {
+    public-read var androidLinearLayout = bind androidDelegate as android.widget.LinearLayout;
 
-    /**
-     * If set, specifies that the associated text view should automatically
-     * capitalize what the user types. The default is "none".
-     * <p>
-     * See {@link TextKeyListener.Capitalize} for all the possible values.
-     */
-    public-init var capitalize = TextKeyListener.Capitalize.NONE;
+    override function contextUpdated() {
+        androidDelegate = new android.widget.LinearLayout(context);
+    }
 
-    init {
-        androidKeyListener = TextKeyListener.getInstance(autoText, capitalize);
+    public var orientation:Orientation on replace {
+        if (isInitialized(orientation)) updateProperty(function() {
+            androidLinearLayout.setOrientation(orientation.getOrient());
+        });
     }
 }

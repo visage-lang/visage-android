@@ -25,20 +25,17 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.visage.android.app;
+package visage.android.text.method;
 
-import android.os.Bundle;
-import org.visage.android.view.View;
+import android.text.method.DateTimeKeyListener;
 
 /**
+ * Allows entry of dates with a time component into a text field.
+ *
  * @author Stephen Chin <steveonjava@gmail.com>
  */
-public class Activity extends android.app.Activity {
-    override function onCreate(savedInstanceState:Bundle) {
-        super.onCreate(savedInstanceState);
-        view.context = this;
-        setContentView(view.androidView);
+public class DateTime extends KeyListener {
+    init {
+        androidKeyListener = DateTimeKeyListener.getInstance();
     }
-
-    public default var view:View;
 }

@@ -25,19 +25,27 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.visage.android.view;
+package visage.android.widget;
+
+import android.text.TextWatcher;
 
 /**
  * @author Stephen Chin <steveonjava@gmail.com>
  */
-public abstract class ViewGroup extends View {
-    public-read var androidViewGroup = bind androidDelegate as android.view.ViewGroup;
+public class EditText extends TextView {
+    public-read var androidEditText = bind androidDelegate as android.widget.EditText;
 
-    public default var view:View[] on replace =newView {
-        updateProperty(function() {
-            for (v in newView) {
-                v.context = context;
-                androidViewGroup.addView(v.androidView);
+    override function contextUpdated() {
+        androidDelegate = new android.widget.EditText(context);
+        androidEditText.addTextChangedListener(TextWatcher {
+            override function afterTextChanged(e) {
+                textUpdating = true;
+                text = androidEditText.getText().toString();
+                textUpdating = false;
+            }
+            override function onTextChanged(s, start, befor, count) {
+            }
+            override function beforeTextChanged(s, start, count, aftr) {
             }
         });
     }
