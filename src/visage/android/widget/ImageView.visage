@@ -1,0 +1,102 @@
+/*
+ * Copyright (c) 2010-2011, Visage Project
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 3. Neither the name Visage nor the names of its contributors may be used
+ *    to endorse or promote products derived from this software without
+ *    specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+package visage.android.widget;
+
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.widget.ImageView.ScaleType;
+
+import visage.android.view.View;
+
+/**
+ * @author Alain Béarez <A@cua.li>
+ */
+public class ImageView extends View {
+    public-read var androidImageView = bind androidDelegate as android.widget.ImageView;
+
+    override function contextUpdated() {
+        androidDelegate = new android.widget.ImageView(context);
+    }
+    public var adjustViewBounds :Boolean on replace {
+        if (isInitialized(adjustViewBounds)) updateProperty(function() {
+            androidImageView.setAdjustViewBounds(adjustViewBounds)
+        })
+    }
+    public var alpha :Integer on replace {
+        if (isInitialized(alpha)) updateProperty(function() {
+            androidImageView.setAlpha(alpha)
+        })
+    }
+    public var imageBitmap :Bitmap on replace {
+        if (isInitialized(imageBitmap)) updateProperty(function() {
+            androidImageView.setImageBitmap(imageBitmap)
+        })
+    }
+    public var imageDrawable :Drawable on replace {
+        if (isInitialized(imageDrawable)) updateProperty(function() {
+            androidImageView.setImageDrawable(imageDrawable)
+        })
+    }
+    public var imageLevel :Integer on replace {
+        if (isInitialized(imageLevel)) updateProperty(function() {
+            androidImageView.setImageLevel(imageLevel)
+        })
+    }
+    public var imageURI :Uri on replace {
+        if (isInitialized(imageURI)) updateProperty(function() {
+            androidImageView.setImageURI(imageURI)
+        })
+    }
+    public var imageMatrix :Matrix on replace {
+        if (isInitialized(imageMatrix)) updateProperty(function() {
+            androidImageView.setImageMatrix(imageMatrix)
+        })
+    }
+    public var maxHeight :Integer on replace {
+        if (isInitialized(maxHeight)) updateProperty(function() {
+            androidImageView.setMaxHeight(maxHeight)
+        })
+    }
+    public var maxWidth :Integer on replace {
+        if (isInitialized(maxWidth)) updateProperty(function() {
+            androidImageView.setMaxWidth(maxWidth)
+        })
+    }
+    public var scaleType :ScaleType on replace {
+        if (isInitialized(scaleType)) updateProperty(function() {
+            androidImageView.setScaleType(scaleType)
+        })
+    }
+    public var selected :Boolean on replace {
+        if (isInitialized(selected)) updateProperty(function() {
+            androidImageView.setSelected(selected)
+        })
+    }
+}

@@ -1,0 +1,108 @@
+/*
+ * Copyright (c) 2010-2011, Visage Project
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 3. Neither the name Visage nor the names of its contributors may be used
+ *    to endorse or promote products derived from this software without
+ *    specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+package visage.android.widget;
+
+import android.widget.Adapter;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
+
+import visage.android.view.ViewGroup;
+
+/**
+ * @author Alain Béarez <A@cua.li>
+ */
+public abstract class AdapterView extends ViewGroup {
+    public-read var androidAdapterView = bind androidDelegate as android.widget.AdapterView;
+
+    public var adapter :Adapter on replace {
+        if (isInitialized(adapter)) updateProperty(function() {
+            androidAdapterView.setAdapter(adapter)
+        })
+    }
+    public var onItemClick:function() on replace {
+        if (isInitialized(onItemClick)) updateProperty(function() {
+            if (onItemClick != null) {
+                def clickFunc = onItemClick;
+                androidAdapterView.setOnItemClickListener(OnItemClickListener {
+                    override function onItemClick(p, v, pos, i) {
+                        clickFunc();
+                    }
+                });
+            } else {
+                androidAdapterView.setOnItemClickListener(null);
+            }
+        })
+    }
+    public var onItemLongClick:function():Boolean on replace {
+        if (isInitialized(onItemLongClick)) updateProperty(function() {
+            if (onItemLongClick != null) {
+                def clickFunc = onItemLongClick;
+                androidAdapterView.setOnItemLongClickListener(OnItemLongClickListener {
+                    override function onItemLongClick(p, v, pos, i) {
+                        clickFunc();
+                    }
+                });
+            } else {
+                androidAdapterView.setOnItemLongClickListener(null);
+            }
+        })
+    }
+    /*
+    public var onItemSelected:function() on replace {
+        if (isInitialized(onItemSelected)) updateProperty(function() {
+            if (onItemSelected != null) {
+                def clickFunc = onItemSelected;
+                androidAdapterView.setOnItemSelectedListener(OnItemSelectedListener {
+                    override function onItemSelected(p, v, pos, i) {
+                        clickFunc();
+                    }
+                    // FIXME this interface has two methods and requires a different wrapping pattern
+                });
+            } else {
+                androidAdapterView.setOnItemSelectedListener(null);
+            }
+        })
+    }
+    public var onNothingSelected:function() on replace {
+        if (isInitialized(onNothingSelected)) updateProperty(function() {
+            if (onNothingSelected != null) {
+                def clickFunc = onNothingSelected;
+                androidAdapterView.setOnItemSelectedListener(OnItemSelectedListener {
+                    override function onNothingSelected(p) {
+                        clickFunc();
+                    }
+                    // FIXME this interface has two methods and requires a different wrapping pattern
+                });
+            } else {
+                androidAdapterView.setOnItemSelectedListener(null);
+            }
+        })
+    }
+    /**/
+}
