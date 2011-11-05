@@ -27,7 +27,7 @@
  */
 package org.visage.android.preference;
 
-import org.visage.android.widget.EditText;
+import visage.android.widget.EditText;
 
 /**
  * A {@link Preference] that allows for string input.
