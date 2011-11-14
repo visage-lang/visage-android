@@ -25,18 +25,33 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package visage.android.app;
+package visage.android.widget;
 
-import visage.android.view.View;
+import visage.android.graphics.drawable.Drawable;
+import visage.android.view.ViewGroup;
 
 /**
- * @author Stephen Chin <steveonjava@gmail.com>
+ * @author Alain Béarez <A@cua.li>
  */
-public class Activity extends android.app.Activity {
-    public default var view :View on replace {
-        if (isInitialized(view)) {
-            view.context = this;
-            setContentView(view.androidView)
-        }
+public class FrameLayout extends ViewGroup {
+    public-read var androidFrameLayout = bind androidDelegate as android.widget.FrameLayout;
+
+    override function contextUpdated() {
+        androidDelegate = new android.widget.FrameLayout(context);
+    }
+    public var foreground :Drawable on replace {
+        if (isInitialized(foreground)) updateProperty(function() {
+            androidFrameLayout.setForeground(foreground.androidDrawable);
+        });
+    }
+    public var foregroundGravity :Integer on replace {
+        if (isInitialized(foregroundGravity)) updateProperty(function() {
+            androidFrameLayout.setForegroundGravity(foregroundGravity);
+        });
+    }
+    public var measureAllChildren :Boolean on replace {
+        if (isInitialized(measureAllChildren)) updateProperty(function() {
+            androidFrameLayout.setMeasureAllChildren(measureAllChildren);
+        });
     }
 }

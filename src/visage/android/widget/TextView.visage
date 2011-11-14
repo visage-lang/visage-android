@@ -27,12 +27,14 @@
  */
 package visage.android.widget;
 
+import android.graphics.Typeface;
 import android.text.method.PasswordTransformationMethod;
 import android.text.method.SingleLineTransformationMethod;
 import android.text.TextUtils;
 import visage.android.view.View;
 import visage.android.text.method.KeyListener;
 
+import org.visage.android.util.ColorAdapter;
 import org.visage.android.util.Unit;
 import org.visage.android.text.util.AutoLink;
 
@@ -43,6 +45,7 @@ import org.visage.android.text.util.AutoLink;
  * for editing.
  *
  * @author Stephen Chin <steveonjava@gmail.com>
+ * @author Alain Béarez <A@cua.li>
  */
 public class TextView extends View {
     public-read var androidTextView = bind androidDelegate as android.widget.TextView;
@@ -84,6 +87,17 @@ public class TextView extends View {
     public var ellipsize:TextUtils.TruncateAt on replace {
         if (isInitialized(ellipsize)) updateProperty(function() {
             androidTextView.setEllipsize(ellipsize);
+        })
+    }
+
+    /**
+     * The horizontal alignment of the text and the vertical gravity that will be used
+     * when there is extra space in the TextView beyond what is required for the text itself.
+     * @see <a href='http://developer.android.com/reference/android/view/Gravity.html'>Gravity</a>
+     */
+    public var gravity :Integer on replace {
+        if (isInitialized(gravity)) updateProperty(function() {
+            androidTextView.setGravity(gravity)
         })
     }
 
@@ -170,6 +184,15 @@ public class TextView extends View {
     }
 
     /**
+     * The text color for all the states (normal, selected, focused).
+     */
+    public var textColor :Color on replace {
+        if (isInitialized(textColor)) updateProperty(function() {
+            androidTextView.setTextColor(ColorAdapter.toAndroid(textColor));
+        })
+    }
+
+    /**
      * Size of the text.  The units of this are set by {@link #textSizeUnits},
      * which is "SP" (scaled-pixels) by default.
      */
@@ -188,6 +211,15 @@ public class TextView extends View {
 
     function setText() {
         androidTextView.setTextSize(textSizeUnits.getUnitMask(), textSize);
+    }
+
+    /**
+     * The typeface and style in which the text should be displayed..
+     */
+    public var typeface :Typeface on replace {
+        if (isInitialized(typeface)) updateProperty(function() {
+            androidTextView.setTypeface(typeface);
+        })
     }
 
     /**

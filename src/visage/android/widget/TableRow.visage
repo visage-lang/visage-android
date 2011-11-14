@@ -25,18 +25,15 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package visage.android.app;
-
-import visage.android.view.View;
+package visage.android.widget;
 
 /**
- * @author Stephen Chin <steveonjava@gmail.com>
+ * @author Alain Béarez <A@cua.li>
  */
-public class Activity extends android.app.Activity {
-    public default var view :View on replace {
-        if (isInitialized(view)) {
-            view.context = this;
-            setContentView(view.androidView)
-        }
+public class TableRow extends LinearLayout {
+    public-read var androidTableRow = bind androidDelegate as android.widget.TableRow;
+
+    override function contextUpdated() {
+        androidDelegate = new android.widget.TableRow(context);
     }
 }

@@ -29,10 +29,10 @@ package visage.android.widget;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.widget.ImageView.ScaleType;
 
+import visage.android.graphics.drawable.Drawable;
 import visage.android.view.View;
 
 /**
@@ -61,7 +61,7 @@ public class ImageView extends View {
     }
     public var imageDrawable :Drawable on replace {
         if (isInitialized(imageDrawable)) updateProperty(function() {
-            androidImageView.setImageDrawable(imageDrawable)
+            androidImageView.setImageDrawable(imageDrawable.androidDrawable)
         })
     }
     public var imageLevel :Integer on replace {
@@ -69,9 +69,9 @@ public class ImageView extends View {
             androidImageView.setImageLevel(imageLevel)
         })
     }
-    public var imageURI :Uri on replace {
+    public var imageURI :String on replace {
         if (isInitialized(imageURI)) updateProperty(function() {
-            androidImageView.setImageURI(imageURI)
+            androidImageView.setImageURI(Uri.parse(imageURI))
         })
     }
     public var imageMatrix :Matrix on replace {

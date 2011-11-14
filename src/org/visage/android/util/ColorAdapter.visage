@@ -1,0 +1,9 @@
+package org.visage.android.util;
+
+public function toAndroid(color :Color) :Integer {
+    def opacity = (255 * color.opacity) as Integer;
+    def red = (255 * color.red) as Integer;
+    def green = (255 * color.green) as Integer;
+    def blue = (255 * color.blue) as Integer;
+    android.graphics.Color.argb(opacity, red, green, blue)
+}

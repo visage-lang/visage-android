@@ -25,18 +25,27 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package visage.android.app;
+package visage.android.widget;
 
-import visage.android.view.View;
+import visage.android.view.ViewGroup;
 
 /**
- * @author Stephen Chin <steveonjava@gmail.com>
+ * @author Alain Béarez <A@cua.li>
  */
-public class Activity extends android.app.Activity {
-    public default var view :View on replace {
-        if (isInitialized(view)) {
-            view.context = this;
-            setContentView(view.androidView)
-        }
+public class TableLayout extends LinearLayout {
+    public-read var androidTableLayout = bind androidDelegate as android.widget.TableLayout;
+
+    override function contextUpdated() {
+        androidDelegate = new android.widget.TableLayout(context);
+    }
+    public var shrinkAllColumns :Boolean on replace {
+        if (isInitialized(shrinkAllColumns)) updateProperty(function() {
+            androidTableLayout.setShrinkAllColumns(shrinkAllColumns);
+        });
+    }
+    public var stretchAllColumns :Boolean on replace {
+        if (isInitialized(stretchAllColumns)) updateProperty(function() {
+            androidTableLayout.setStretchAllColumns(stretchAllColumns);
+        });
     }
 }

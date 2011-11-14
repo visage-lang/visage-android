@@ -33,6 +33,8 @@ import android.graphics.drawable.ShapeDrawable.ShaderFactory;
 import android.graphics.drawable.shapes.Shape;
 import android.graphics.drawable.shapes.RectShape;
 
+import org.visage.android.util.ColorAdapter;
+
 /**
  * @author Alain Béarez <A@cua.li>
  */
@@ -41,7 +43,7 @@ public class ShapeDrawable extends Drawable {
     public-read var androidShapeDrawable = bind androidDelegate as android.graphics.drawable.ShapeDrawable;
 
     public default var shape :Shape = RectShape{} on replace {
-        if (isInitialized(bounds)) updateProperty(function() {
+        if (isInitialized(shape)) updateProperty(function() {
             androidShapeDrawable.setShape(shape)
         })
     }
@@ -73,6 +75,11 @@ public class ShapeDrawable extends Drawable {
     public var shaderFactory :ShaderFactory on replace {
         if (isInitialized(shaderFactory)) updateProperty(function() {
             androidShapeDrawable.setShaderFactory(shaderFactory)
+        })
+    }
+    public var color :Color on replace {
+        if (isInitialized(color)) updateProperty(function() {
+            androidShapeDrawable.getPaint().setColor(ColorAdapter.toAndroid(color))
         })
     }
 }

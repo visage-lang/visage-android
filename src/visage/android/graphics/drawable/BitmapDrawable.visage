@@ -48,7 +48,7 @@ public class BitmapDrawable extends Drawable {
         if (isInitialized(mandatory)) {
             if (null == mandatory.resources)
                 throw new IllegalArgumentException("Missing mandatory Resources to build a BitmapDrawable.");
-            if (null == mandatory.filepath) { // not that nice would it be a pattern!!!
+            if (null == mandatory.filepath) { // not that nice, would it be a pattern!!!
                 if (null == mandatory.bitmap) {
                     if (null == mandatory.stream) {
                         androidDelegate = new android.graphics.drawable.BitmapDrawable(mandatory.resources)

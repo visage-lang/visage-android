@@ -29,13 +29,22 @@ package visage.android.view;
 
 import org.visage.android.AndroidDelegate;
 import org.visage.android.ContextAware;
+import org.visage.android.util.ColorAdapter;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 
 /**
  * @author Stephen Chin <steveonjava@gmail.com>
+ * @author Alain Béarez <A@cua.li>
  */
 public abstract class View extends AndroidDelegate, ContextAware {
     public-read var androidView = bind androidDelegate as android.view.View;
+
+    public var background:Color on replace {
+        if (isInitialized(background)) updateProperty(function() {
+            androidView.setBackgroundColor(ColorAdapter.toAndroid(background));
+        })
+    }
 
     public var focusable:Boolean on replace {
         if (isInitialized(focusable)) updateProperty(function() {
@@ -47,6 +56,28 @@ public abstract class View extends AndroidDelegate, ContextAware {
         if (isInitialized(focusableInTouchMode)) updateProperty(function() {
             androidView.setFocusableInTouchMode(focusableInTouchMode);
         })
+    }
+
+    public var layoutParams :LayoutParams on replace {
+        if (isInitialized(layoutParams)) updateProperty(function() {
+            androidView.setLayoutParams(layoutParams);
+        })
+    }
+
+    public var padding :Integer[] on replace {
+        if (1 < sizeof padding) {
+            if (isInitialized(padding)) updateProperty(function() {
+                if (3 < sizeof padding) {
+                    androidView.setPadding(padding[0], padding[1], padding[2], padding[3])
+                } else if (2 < sizeof padding) {
+                    androidView.setPadding(padding[0], padding[1], padding[2], padding[1]) 
+                } else if (1 < sizeof padding) {
+                    androidView.setPadding(padding[0], padding[1], padding[0], padding[1]) 
+                } else {
+                    androidView.setPadding(padding[0], padding[0], padding[0], padding[0]) 
+                }
+            })
+        }
     }
 
     public var onClick:function() on replace {
