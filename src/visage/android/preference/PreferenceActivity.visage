@@ -25,35 +25,20 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.visage.android.preference;
+package visage.android.preference;
+
+import android.os.Bundle;
 
 /**
  * @author Stephen Chin <steveonjava@gmail.com>
  */
-public class PreferenceGroup extends Preference {
-    public-read var androidPreferenceGroup = bind androidDelegate as android.preference.PreferenceGroup;
-
-    public var preferences:Preference[] on replace oldPref[a..b]=newPref {
-        if (isInitialized(preferences)) updateProperty(function():Void {
-            if (androidPreferenceGroup.getPreferenceManager() != null) {
-                for (p in oldPref[a..b]) {
-                    androidPreferenceGroup.removePreference(p.androidPreference);
-                }
-                for (p in newPref) {
-                    p.context = context;
-                    androidPreferenceGroup.addPreference(p.androidPreference);
-                    p.preferenceAdded();
-                }
-            }
-        });
+public class PreferenceActivity extends android.preference.PreferenceActivity {
+    override function onCreate(savedInstanceState:Bundle) {
+        super.onCreate(savedInstanceState);
+        screen.preferenceManager = getPreferenceManager();
+        screen.context = this;
+        setPreferenceScreen(screen.androidPreferenceScreen);
     }
 
-    override function preferenceAdded() {
-        for (p in preferences) {
-            p.context = context;
-            androidPreferenceGroup.addPreference(p.androidPreference);
-            p.preferenceAdded();
-        }
-    }
-
+    public default var screen:PreferenceScreen;
 }

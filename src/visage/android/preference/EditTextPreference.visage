@@ -25,61 +25,70 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.visage.android.preference;
+package visage.android.preference;
 
-import visage.util.Sequences;
+import visage.android.widget.EditText;
 
 /**
+ * A {@link Preference] that allows for string input.
+ * <p/>
+ * It is a subclass of {@link DialogPreference} and shows the {@link EditText}
+ * in a dialog. This {@link EditText} can be modified directly by using the
+ * {@link #editText} variable, or through pass-through variables on this class.
+ * <p/>
+ * This preference will store a string into the SharedPreferences.
+ *
  * @author Stephen Chin <steveonjava@gmail.com>
  */
-public class ListPreference extends DialogPreference {
-    public-read var androidListPreference = bind androidDelegate as android.preference.ListPreference;
+public class EditTextPreference extends DialogPreference {
+    /**
+     * Reference to the wrapped Android <code>EditTextPreference</code> class.
+     */
+    public-read var androidEditTextPreference = bind androidDelegate as android.preference.EditTextPreference;
 
     override function contextUpdated() {
-        androidDelegate = new android.preference.ListPreference(context);
+        androidDelegate = new android.preference.EditTextPreference(context);
+        (editText as WrappedEditText).wrappedEditText = androidEditTextPreference.getEditText();
+        editText.context = context;
     }
 
-    public var entries:String[] on replace {
-        if (isInitialized(entries)) updateProperty(function() {
-            androidListPreference.setEntries(entries);
-        });
-    }
+    /**
+     * The [@link EditText} widget that will be shown in the dialog.
+     */
+    public-read def editText:EditText = WrappedEditText {}
 
-    public var entryValues:String[] on replace {
-        if (isInitialized(entryValues)) updateProperty(function() {
-            androidListPreference.setEntryValues(entryValues);
-        });
-    }
-
-    var updatingEntry = false;
+    var updatingText = false;
 
     override function onPreferenceChange(preference:android.preference.Preference, newValue:Object):Boolean {
         if (super.onPreferenceChange(preference, newValue)) {
-            updatingEntry = true;
-            value = newValue as String;
-            entry = entries[androidListPreference.findIndexOfValue(value)];
-            updatingEntry = false;
+            updatingText = true;
+            text = newValue as String;
+            updatingText = false;
             return true;
         }
         return false;
     }
-
+    
     override function preferenceAdded() {
-        updatingEntry = true;
-        value = androidListPreference.getValue();
-        entry = androidListPreference.getEntry().toString();
-        updatingEntry = false;
+        updatingText = true;
+        text = androidEditTextPreference.getText();
+        updatingText = false;
     }
 
-    public var entry:String on replace {
-        if (not updatingEntry and isInitialized(entry)) updateProperty(function() {
-            androidListPreference.setValueIndex(Sequences.indexOf(entry, entries));
+    /**
+     * Bound to the text from the <code>SharedPreferences</code>.  Retrieving
+     * this value will return the current persisted value, and setting it will
+     * save a new value.
+     */
+    public var text:String on replace {
+        if (not updatingText and isInitialized(text)) updateProperty(function() {
+            androidEditTextPreference.setText(text);
         });
     }
 
-    public var value:String on replace {
-        if (not updatingEntry and isInitialized(value)) updateProperty(function() {
-            androidListPreference.setValue(value);
-        });
-    }
+    public var hint = bind editText.hint with inverse;
+}
+
+class WrappedEditText extends EditText {
+    public-init var wrappedEditText:android.widget.EditText;
 }

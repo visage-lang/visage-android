@@ -25,20 +25,15 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.visage.android.preference;
-
-import android.os.Bundle;
+package visage.android.preference;
 
 /**
  * @author Stephen Chin <steveonjava@gmail.com>
  */
-public class PreferenceActivity extends android.preference.PreferenceActivity {
-    override function onCreate(savedInstanceState:Bundle) {
-        super.onCreate(savedInstanceState);
-        screen.preferenceManager = getPreferenceManager();
-        screen.context = this;
-        setPreferenceScreen(screen.androidPreferenceScreen);
-    }
+public class PreferenceCategory extends PreferenceGroup {
+    public-read var androidPreferenceCategory = bind androidDelegate as android.preference.PreferenceCategory;
 
-    public default var screen:PreferenceScreen;
+    override function contextUpdated() {
+        androidDelegate = new android.preference.PreferenceCategory(context);
+    }
 }
