@@ -1,0 +1,115 @@
+/*
+ * Copyright (c) 2010-2011, Visage Project
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 3. Neither the name Visage nor the names of its contributors may be used
+ *    to endorse or promote products derived from this software without
+ *    specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+package visage.android.graphics.drawable;
+
+import android.graphics.ColorFilter;
+import android.graphics.drawable.GradientDrawable.Orientation;
+
+import java.lang.IllegalArgumentException;
+
+import org.visage.android.util.ColorAdapter;
+
+/**
+ * @author Alain Béarez <A@cua.li>
+ */
+public class GradientDrawable extends Drawable {
+    override var androidDelegate = android.graphics.drawable.GradientDrawable{}
+    public-read var androidGradientDrawable = bind androidDelegate as android.graphics.drawable.GradientDrawable;
+
+    public default var mandatory :Constructor on replace {
+        if (isInitialized(mandatory)) {
+            if (null == mandatory.orientation)
+                throw new IllegalArgumentException("Missing mandatory Orientation to build a GradientDrawable.");
+            if (null == mandatory.start) 
+                throw new IllegalArgumentException("Missing mandatory start color to build a GradientDrawable.");
+            if (null == mandatory.end)
+                throw new IllegalArgumentException("Missing mandatory end color to build a GradientDrawable.");
+            if (null == mandatory.center) {
+                def colors = [ 
+                    ColorAdapter.toAndroid(mandatory.start), 
+                    ColorAdapter.toAndroid(mandatory.end) 
+                ] as nativearray of Integer;
+                androidDelegate = new android.graphics.drawable.GradientDrawable(mandatory.orientation, colors)
+            } else {
+                def colors = [ 
+                    ColorAdapter.toAndroid(mandatory.start), 
+                    ColorAdapter.toAndroid(mandatory.center), 
+                    ColorAdapter.toAndroid(mandatory.end) 
+                ] as nativearray of Integer;
+                androidDelegate = new android.graphics.drawable.GradientDrawable(mandatory.orientation, colors)
+            }
+        }
+    }
+    public var alpha :Integer on replace {
+        if (isInitialized(alpha)) updateProperty(function() {
+            androidGradientDrawable.setAlpha(alpha)
+        })
+    }
+    public var color :Color on replace {
+        if (isInitialized(color)) updateProperty(function() {
+            androidGradientDrawable.setColor(ColorAdapter.toAndroid(color))
+        })
+    }
+    public var colorFilter :ColorFilter on replace {
+        if (isInitialized(colorFilter)) updateProperty(function() {
+            androidGradientDrawable.setColorFilter(colorFilter)
+        })
+    }
+    public var cornerRadii :Float[] on replace {
+        if (isInitialized(cornerRadii)) updateProperty(function() {
+            androidGradientDrawable.setCornerRadii(cornerRadii as nativearray of Float)
+        })
+    }
+    public var cornerRadius :Float on replace {
+        if (isInitialized(cornerRadius)) updateProperty(function() {
+            androidGradientDrawable.setCornerRadius(cornerRadius)
+        })
+    }
+    public var gradientRadius :Float on replace {
+        if (isInitialized(gradientRadius)) updateProperty(function() {
+            androidGradientDrawable.setGradientRadius(gradientRadius)
+        })
+    }
+    public var gradientType :Integer on replace {
+        if (isInitialized(gradientType)) updateProperty(function() {
+            androidGradientDrawable.setGradientType(gradientType)
+        })
+    }
+    public var shape :Integer on replace {
+        if (isInitialized(shape)) updateProperty(function() {
+            androidGradientDrawable.setShape(shape)
+        })
+    }
+}
+
+public class Constructor {
+    public default var orientation :Orientation;
+    public var start :Color;
+    public var center :Color;
+    public var end :Color;
+}

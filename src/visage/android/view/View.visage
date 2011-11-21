@@ -30,7 +30,9 @@ package visage.android.view;
 import org.visage.android.AndroidDelegate;
 import org.visage.android.ContextAware;
 import org.visage.android.util.ColorAdapter;
+import android.view.MotionEvent;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 
 /**
@@ -80,17 +82,32 @@ public abstract class View extends AndroidDelegate, ContextAware {
         }
     }
 
-    public var onClick:function() on replace {
+    public var onClick :function(:android.view.View):Void on replace {
         if (isInitialized(onClick)) updateProperty(function() {
             if (onClick != null) {
-                def clickFunc = onClick;
+                def clickFunction = onClick;
                 androidView.setOnClickListener(OnClickListener {
-                    override function onClick(v) {
-                        clickFunc();
+                    override function onClick(view) {
+                        clickFunction(view)
+                    }
+                })
+            } else {
+                androidView.setOnClickListener(null)
+            }
+        })
+    }
+
+    public var onTouch :function(:android.view.View,:MotionEvent):Boolean on replace {
+        if (isInitialized(onTouch)) updateProperty(function() {
+            if (onTouch != null) {
+                def touchFunction = onTouch;
+                androidView.setOnTouchListener(OnTouchListener {
+                    override function onTouch(view, event) {
+                        touchFunction(view, event)
                     }
                 });
             } else {
-                androidView.setOnClickListener(null);
+                androidView.setOnTouchListener(null)
             }
         })
     }
