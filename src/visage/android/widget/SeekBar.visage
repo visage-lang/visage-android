@@ -28,6 +28,7 @@
 package visage.android.widget;
 
 import android.view.animation.Interpolator;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import visage.android.graphics.drawable.Drawable;
 import visage.android.view.View;
@@ -56,21 +57,61 @@ public class SeekBar extends ProgressBar {
             androidSeekBar.setThumbOffset(thumbOffset)
         })
     }
-    /*
-    public var onSeekBarChange :function(:android.widget.SeekBar):Void on replace {
-        if (isInitialized(onSeekBarChange)) updateProperty(function() {
-            if (onSeekBarChange != null) {
-                def barChangeFunction = onSeekBarChange;
-                androidSeekBar.setOnSeekBarChangeListener(OnSeekBarChangeListener {
-                    override function onSeekBarChange(view) {
-                        barChangeFunction(view)
-                    }
-// FIXME there are three methods in here, another pattern is required
-                });
-            } else {
-                androidSeekBar.setOnSeekBarChangeListener(null);
-            }
-        })
+    public var onStartTrackingTouch :function(:android.widget.SeekBar):Void on replace {
+        if (isInitialized(onStartTrackingTouch)) updateProperty(changeListener)
     }
-    /**/
+    public var onStopTrackingTouch :function(:android.widget.SeekBar):Void on replace {
+        if (isInitialized(onStopTrackingTouch)) updateProperty(changeListener)
+    }
+    public var onProgressChanged :function(:android.widget.SeekBar,:Integer,:Boolean):Void on replace {
+        if (isInitialized(onProgressChanged)) updateProperty(changeListener)
+    }
+    function doNoTouch(bar :android.widget.SeekBar) :Void {}
+    function doNoProgress(bar :android.widget.SeekBar, progress :Integer, fromUser :Boolean) :Void {}
+    function changeListener() :Void {
+        if ((null == onStartTrackingTouch) and (null == onStopTrackingTouch) and (null == onProgressChanged)) {
+            androidSeekBar.setOnSeekBarChangeListener(null)
+        } else {
+            /* The following lines give a cryptic error message:
+            //    incompatible types
+            //    found   : org.visage.functions.Function1<java.lang.Void,capture#62 of ? extends java.lang.Object>
+            //    required: org.visage.functions.Function1<java.lang.Void,? super android.widget.SeekBar>
+            // var startTouchFunction = if (null == onStartTrackingTouch) then doNoTouch else onStartTrackingTouch;
+            // var stopTouchFunction = if (null == onStopTrackingTouch) then doNoTouch else onStopTrackingTouch;
+            // var progressFunction = if (null == onProgressChanged) then doNoProgress else onProgressChanged;
+            /**/
+            // the type is required here to avoid yet another compiler error
+            var startTouchFunction :function(:android.widget.SeekBar):Void; 
+            if (null == onStartTrackingTouch) {
+                startTouchFunction = doNoTouch
+            } else {
+                startTouchFunction = onStartTrackingTouch
+            }
+            var stopTouchFunction :function(:android.widget.SeekBar):Void;
+            if (null == onStopTrackingTouch) {
+                stopTouchFunction = doNoTouch
+            } else {
+                stopTouchFunction = onStopTrackingTouch
+            }
+            var progressFunction :function(:android.widget.SeekBar,:Integer,:Boolean):Void;
+            if (null == onProgressChanged) {
+                progressFunction = doNoProgress
+            } else {
+                progressFunction = onProgressChanged
+            }
+            androidSeekBar.setOnSeekBarChangeListener(
+                OnSeekBarChangeListener {
+                    override function onStartTrackingTouch(bar) {
+                        startTouchFunction(bar)
+                    }
+                    override function onStopTrackingTouch(bar) {
+                        stopTouchFunction(bar)
+                    }
+                    override function onProgressChanged(bar, progress, fromUser) {
+                        progressFunction(bar, progress, fromUser)
+                    }
+                }
+            )
+        }
+    }
 }

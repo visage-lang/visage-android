@@ -73,36 +73,52 @@ public abstract class AdapterView extends ViewGroup {
             }
         })
     }
-    /*
-    public var onItemSelected:function() on replace {
-        if (isInitialized(onItemSelected)) updateProperty(function() {
-            if (onItemSelected != null) {
-                def clickFunc = onItemSelected;
-                androidAdapterView.setOnItemSelectedListener(OnItemSelectedListener {
-                    override function onItemSelected(p, v, pos, i) {
-                        clickFunc();
-                    }
-                    // FIXME this interface has two methods and requires a different wrapping pattern
-                });
-            } else {
-                androidAdapterView.setOnItemSelectedListener(null);
-            }
-        })
+    public var onItemSelected :function(:android.widget.AdapterView,:android.view.View,:Integer,:Long):Void on replace {
+        if (isInitialized(onItemSelected)) updateProperty(changeListener)
     }
-    public var onNothingSelected:function() on replace {
-        if (isInitialized(onNothingSelected)) updateProperty(function() {
-            if (onNothingSelected != null) {
-                def clickFunc = onNothingSelected;
-                androidAdapterView.setOnItemSelectedListener(OnItemSelectedListener {
-                    override function onNothingSelected(p) {
-                        clickFunc();
-                    }
-                    // FIXME this interface has two methods and requires a different wrapping pattern
-                });
-            } else {
-                androidAdapterView.setOnItemSelectedListener(null);
-            }
-        })
+    public var onNothingSelected :function(:android.widget.AdapterView):Void on replace {
+        if (isInitialized(onNothingSelected)) updateProperty(changeListener)
     }
-    /**/
+    function doNoSelect(parent :android.widget.AdapterView, view :android.view.View, position :Integer, id :Long):Void {}
+    function doNothing(parent :android.widget.AdapterView):Void {}
+    function changeListener() {
+        if ((null == onItemSelected) and (null == onNothingSelected)) {
+            androidAdapterView.setOnItemSelectedListener(null);
+        } else {
+            /* the following two lines do not compile */
+            // incompatible types
+            // found   : org.visage.functions.Function4<java.lang.Void,capture#262 of ? extends java.lang.Object,capture#535 of ? extends java.lang.Object,capture#484 of ? extends java.lang.Object,capture#830 of ? extends java.lang.Object>
+            // required: org.visage.functions.Function4<java.lang.Void,? super android.widget.AdapterView,? super android.view.View,? super java.lang.Integer,? super java.lang.Long>
+            //      var itemFunction = if (null == onItemSelected) then doNoSelect else onItemSelected;
+            // incompatible types
+            // found   : org.visage.functions.Function1<java.lang.Void,capture#637 of ? extends java.lang.Object>
+            // required: org.visage.functions.Function1<java.lang.Void,? super android.widget.AdapterView>
+            //      var nothingFunction = if (null == onNothingSelected) then doNothing else onNothingSelected;
+            /* explicitly state the function type to avoid yet another compiler error */
+            // incompatible types
+            // found   : function(:android.widget.AdapterView,:android.view.View,:Integer,:Long):void
+            // required: function(:android.widget.AdapterView,:android.view.View,:Integer,:Long):void
+            //                itemFunction = onItemSelected
+            var itemFunction :function(:android.widget.AdapterView,:android.view.View,:Integer,:Long):Void;
+            if (null == onItemSelected) {
+                itemFunction = doNoSelect
+            } else {
+                itemFunction = onItemSelected
+            }
+            var nothingFunction :function(:android.widget.AdapterView):Void;
+            if (null == onNothingSelected) {
+                nothingFunction = doNothing
+            } else {
+                nothingFunction = onNothingSelected
+            }
+            androidAdapterView.setOnItemSelectedListener(OnItemSelectedListener {
+                override function onItemSelected(parent, view, position, id) {
+                    itemFunction(parent, view, position, id);
+                }
+                override function onNothingSelected(parent) {
+                    nothingFunction(parent);
+                }
+            })
+        }
+    }
 }

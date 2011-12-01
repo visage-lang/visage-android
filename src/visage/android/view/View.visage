@@ -35,6 +35,8 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 
+import visage.android.graphics.drawable.Drawable;
+
 /**
  * @author Stephen Chin <steveonjava@gmail.com>
  * @author Alain Béarez <A@cua.li>
@@ -48,6 +50,12 @@ public abstract class View extends AndroidDelegate, ContextAware {
         })
     }
 
+    public var backgroundDrawable:Drawable on replace {
+        if (isInitialized(backgroundDrawable)) updateProperty(function() {
+            androidView.setBackgroundDrawable(backgroundDrawable.androidDrawable);
+        })
+    }
+
     public var focusable:Boolean on replace {
         if (isInitialized(focusable)) updateProperty(function() {
             androidView.setFocusable(focusable);
@@ -57,6 +65,12 @@ public abstract class View extends AndroidDelegate, ContextAware {
     public var focusableInTouchMode:Boolean on replace {
         if (isInitialized(focusableInTouchMode)) updateProperty(function() {
             androidView.setFocusableInTouchMode(focusableInTouchMode);
+        })
+    }
+
+    public var keepScreenOn:Boolean on replace {
+        if (isInitialized(keepScreenOn)) updateProperty(function() {
+            androidView.setKeepScreenOn(keepScreenOn);
         })
     }
 
