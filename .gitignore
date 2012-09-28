@@ -1,6 +1,5 @@
-*.class
+^.*\.DS_Store$
+build
+dist
 
-# Package Files #
-*.jar
-*.war
-*.ear
+
